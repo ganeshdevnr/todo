@@ -32,11 +32,11 @@ export const deleteTask = async (taskId: number) => {
 // Update a task's completion status
 export const toggleTaskCompletion = async (
   taskId: number,
-  completed: boolean
+  status: string
 ) => {
   const { data, error } = await supabase
     .from("tasks")
-    .update({ completed })
+    .update({ status })
     .eq("id", taskId);
   if (error) throw new Error(error.message);
   return data;
