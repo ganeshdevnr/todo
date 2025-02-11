@@ -13,6 +13,7 @@ export const addTask = async (task: string) => {
     {
       task_name: task,
       status: "Pending",
+      uid: localStorage.getItem("uid"),
     },
   ]);
   if (error) throw new Error(error.message);

@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
+import { supabase } from "../supabase";
 
 // 3 things that need to be done
 // 1. Create an AuthContextType interface
@@ -6,10 +13,16 @@ import { createContext, useContext, useState, ReactNode } from "react";
 // 3. Create a custom hook to call useContext
 // 4. Create an Auth Provider
 
+interface User {
+  id: string;
+  email: string;
+}
+
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: () => void;
-  logout: () => void;
+  user: User | null;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,18 +32,52 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     !!localStorage.getItem("authToken")
   );
 
-  const login = () => {
-    localStorage.setItem("authToken", "sample-token");
+  const [user, setUser] = useState<User | null>(null);
+
+  // Load user from localStorage on app start
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (!token) return;
+
     setIsAuthenticated(true);
+    setUser({
+      email: localStorage.getItem("email") || "",
+      id: localStorage.getItem("uid") || "",
+    });
+  }, []);
+
+  const login = async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) throw new Error(error.message);
+
+    if (data.session) {
+      localStorage.setItem("authToken", data.session.access_token);
+      localStorage.setItem("refreshToken", data.session.refresh_token);
+      localStorage.setItem("uid", data.user.id);
+      localStorage.setItem("email", data.user.email || "");
+      setIsAuthenticated(true); // ✅ Store user info in state
+      setUser({
+        email: data.user.email || "",
+        id: data.user.id,
+      });
+    }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await supabase.auth.signOut();
     localStorage.removeItem("authToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("uid");
+    localStorage.removeItem("email");
     setIsAuthenticated(false);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

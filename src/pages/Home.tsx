@@ -11,8 +11,6 @@ import { useNavigate } from "react-router-dom";
 
 import "../App.css";
 
-const darkTheme = createTheme({ palette: { mode: "dark" } });
-
 export default function Home() {
   const {
     tasks,
@@ -22,7 +20,7 @@ export default function Home() {
     handleDueDateChangeTask,
   } = useTasks();
 
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -31,49 +29,43 @@ export default function Home() {
   };
 
   return (
-    <>
-      <ThemeProvider theme={darkTheme}>
-        <CssBaseline />
+    <Box>
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
 
-        <Box>
-          <AppBar position="static">
-            <Toolbar>
-              <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="menu"
-                sx={{ mr: 2 }}
-              >
-                <MenuIcon />
-              </IconButton>
+          <Typography
+            className="text-center"
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1 }}
+          >
+            {user?.email}'s TODO
+          </Typography>
 
-              <Typography
-                className="text-center"
-                variant="h6"
-                component="div"
-                sx={{ flexGrow: 1 }}
-              >
-                MY TODO APP
-              </Typography>
+          <Button color="inherit" onClick={handleLogout}>
+            Logout
+          </Button>
+        </Toolbar>
+      </AppBar>
 
-              <Button color="inherit" onClick={handleLogout}>
-                Logout
-              </Button>
-            </Toolbar>
-          </AppBar>
-
-          <div id="app-body">
-            <TaskInput onAddTask={handleAddTask} />
-            <TaskList
-              tasks={tasks}
-              onToggleCompletion={handleToggleCompletion}
-              onDeleteTask={handleDeleteTask}
-              onDueDateChange={handleDueDateChangeTask}
-            />
-          </div>
-        </Box>
-      </ThemeProvider>
-    </>
+      <div id="app-body">
+        <TaskInput onAddTask={handleAddTask} />
+        <TaskList
+          tasks={tasks}
+          onToggleCompletion={handleToggleCompletion}
+          onDeleteTask={handleDeleteTask}
+          onDueDateChange={handleDueDateChangeTask}
+        />
+      </div>
+    </Box>
   );
 }

@@ -14,7 +14,7 @@ const TaskName: FC<TaskProps> = ({ taskName, duedate }) => {
   }).format(dayjs(duedate).startOf("day").toDate());
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col grow">
       <span className="leading-[1.5] font-medium pt-2 text-left">
         {taskName}
       </span>

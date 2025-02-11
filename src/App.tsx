@@ -1,10 +1,17 @@
 import AppRoutes from "./routes/Routes";
 import { AuthProvider } from "./context/AuthContext";
+import { ThemeProvider } from "@emotion/react";
+import { createTheme, CssBaseline } from "@mui/material";
+
+const darkTheme = createTheme({ palette: { mode: "dark" } });
 
 function App() {
   return (
     <AuthProvider>
-      <AppRoutes />
+      <ThemeProvider theme={darkTheme}>
+        <CssBaseline />
+        <AppRoutes />
+      </ThemeProvider>
     </AuthProvider>
   );
 }
