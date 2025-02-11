@@ -17,6 +17,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import IconAsDatePicker from "./components/common/IconAsDatePicker";
 
 dayjs.extend(utc);
 
@@ -101,13 +102,7 @@ function App() {
     }
   }
 
-  async function handleDueDateTask(id: number) {
-    setOpen(true);
-  }
-
   async function handleDueDateChangeTask(id: number, args: any) {
-    setOpen(false);
-
     // Remove timezone and treat it as UTC
     const formattedDate = dayjs(args).format("YYYY-MM-DD") + "T00:00:00.000Z";
 
@@ -150,8 +145,14 @@ function App() {
                     }
                   />
 
-                  <Task taskName={task.task_name} />
+                  <Task taskName={task.task_name} duedate={task.due_date} />
                 </div>
+
+                <IconAsDatePicker
+                  onDateSelect={(args: any) =>
+                    handleDueDateChangeTask(task.id, args)
+                  }
+                />
 
                 <Archive
                   onClick={() => handleDeleteTask(task.id)}
@@ -179,26 +180,10 @@ function App() {
                     defaultChecked
                     onChange={() => handleToggleCompletion(task.id, "Pending")}
                   />
-                  <Task taskName={task.task_name} />
+                  <Task taskName={task.task_name} duedate={task.due_date} />
                 </div>
 
                 <div className="ml-auto flex gap-3">
-                  <Timer
-                    onClick={() => handleDueDateTask(task.id)}
-                    className={archiveStyle}
-                  />
-
-                  <div className="hidden">
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
-                        onChange={(args) =>
-                          handleDueDateChangeTask(task.id, args)
-                        }
-                        open={open}
-                      />
-                    </LocalizationProvider>
-                  </div>
-
                   <Archive
                     onClick={() => handleDeleteTask(task.id)}
                     titleAccess="Delete"
