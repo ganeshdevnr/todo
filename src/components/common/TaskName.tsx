@@ -6,7 +6,7 @@ interface TaskProps {
   duedate: string;
 }
 
-const Task: FC<TaskProps> = ({ taskName, duedate }) => {
+const TaskName: FC<TaskProps> = ({ taskName, duedate }) => {
   const formattedDate = new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "long",
@@ -15,10 +15,12 @@ const Task: FC<TaskProps> = ({ taskName, duedate }) => {
 
   return (
     <div className="flex flex-col">
-      <span className="leading-[1.5] font-medium pt-2">{taskName}</span>
-      <span className="text-sm text-gray-600"> {formattedDate} </span>
+      <span className="leading-[1.5] font-medium pt-2 text-left">
+        {taskName}
+      </span>
+      <span className="text-sm text-gray-600 text-left"> {formattedDate} </span>
     </div>
   );
 };
 
-export default Task;
+export default TaskName;

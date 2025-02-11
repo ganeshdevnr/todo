@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { supabase } from "../supabase";
 
 // Fetch all tasks
 export const getTasks = async () => {
