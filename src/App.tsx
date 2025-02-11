@@ -5,13 +5,20 @@ import {
   deleteTask,
   getTasks,
   toggleTaskCompletion,
+  updateDueDate,
 } from "./taskService";
 import { filter, fromEvent, map } from "rxjs";
 import Checkbox from "@mui/material/Checkbox";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import { Archive } from "@mui/icons-material";
+import { Archive, Timer } from "@mui/icons-material";
 import Task from "./components/common/TaskName";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 const darkTheme = createTheme({
   palette: {
@@ -29,6 +36,7 @@ export type Task = {
 function App() {
   const [task, setTask] = useState<string>("");
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -91,6 +99,20 @@ function App() {
     } catch (error: any) {
       console.error("Error updating task:", error.message);
     }
+  }
+
+  async function handleDueDateTask(id: number) {
+    setOpen(true);
+  }
+
+  async function handleDueDateChangeTask(id: number, args: any) {
+    setOpen(false);
+
+    // Remove timezone and treat it as UTC
+    const formattedDate = dayjs(args).format("YYYY-MM-DD") + "T00:00:00.000Z";
+
+    await updateDueDate(id, formattedDate);
+    fetchTasks();
   }
 
   const archiveStyle =
@@ -159,11 +181,30 @@ function App() {
                   />
                   <Task taskName={task.task_name} />
                 </div>
-                <Archive
-                  onClick={() => handleDeleteTask(task.id)}
-                  titleAccess="Delete"
-                  className={archiveStyle}
-                />
+
+                <div className="ml-auto flex gap-3">
+                  <Timer
+                    onClick={() => handleDueDateTask(task.id)}
+                    className={archiveStyle}
+                  />
+
+                  <div className="hidden">
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        onChange={(args) =>
+                          handleDueDateChangeTask(task.id, args)
+                        }
+                        open={open}
+                      />
+                    </LocalizationProvider>
+                  </div>
+
+                  <Archive
+                    onClick={() => handleDeleteTask(task.id)}
+                    titleAccess="Delete"
+                    className={archiveStyle}
+                  />
+                </div>
               </li>
             ))}
         </ul>

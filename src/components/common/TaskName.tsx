@@ -5,7 +5,7 @@ interface TaskProps {
 }
 
 const Task: FC<TaskProps> = ({ taskName }) => {
-  return <span className="leading-[1.5] pt-2">{taskName}</span>;
+  return <span className="leading-[1.5] font-medium pt-2">{taskName}</span>;
 };
 
 export default Task;

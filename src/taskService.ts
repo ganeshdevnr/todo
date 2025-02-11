@@ -30,13 +30,20 @@ export const deleteTask = async (taskId: number) => {
 };
 
 // Update a task's completion status
-export const toggleTaskCompletion = async (
-  taskId: number,
-  status: string
-) => {
+export const toggleTaskCompletion = async (taskId: number, status: string) => {
   const { data, error } = await supabase
     .from("tasks")
     .update({ status })
+    .eq("id", taskId);
+  if (error) throw new Error(error.message);
+  return data;
+};
+
+// Update a task's completion status
+export const updateDueDate = async (taskId: number, duedate: string) => {
+  const { data, error } = await supabase
+    .from("tasks")
+    .update({ due_date: duedate })
     .eq("id", taskId);
   if (error) throw new Error(error.message);
   return data;
