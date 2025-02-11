@@ -2,20 +2,23 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-import "./Login.css";
+import "./Signup.css";
 
-function Login() {
-  const { login } = useAuth(); // ✅ Get login method from context
-  const navigate = useNavigate();
+const Signup = () => {
+  const { signup, login } = useAuth(); // ✅ Get login method from context
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleSignup = async () => {
     setError(null);
 
     try {
-      await login(email, password); // ✅ Use login from context
+      const user = await signup(email, password); // ✅ Use login from context
+      if (!user) return;
+
+      await login(email, password);
       navigate("/");
     } catch (err: any) {
       setError(err.message);
@@ -23,8 +26,8 @@ function Login() {
   };
 
   return (
-    <div className="p-4" id="login-page">
-      <h2 className="text-lg font-bold">Login</h2>
+    <div className="p-4" id="signup-page">
+      <h2 className="text-lg font-bold">Create Account</h2>
 
       <input
         type="email"
@@ -46,19 +49,19 @@ function Login() {
 
       <button
         className="w-full p-2 mt-4 cursor-pointer bg-blue-500 text-white rounded"
-        onClick={handleLogin}
+        onClick={handleSignup}
       >
-        Login
+        Create Account
       </button>
 
       <a
-        onClick={() => navigate("/signup")}
+        onClick={() => navigate("/login")}
         className="text-gray-300 underline cursor-pointer flex justify-end"
       >
-        Create New User
+        Back to Login
       </a>
     </div>
   );
-}
+};
 
-export default Login;
+export default Signup;

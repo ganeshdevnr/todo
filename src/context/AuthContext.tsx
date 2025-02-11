@@ -23,6 +23,7 @@ interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  signup: (email: string, password: string) => Promise<User>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -76,8 +77,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsAuthenticated(false);
   };
 
+  const signup = async (email: string, password: string): Promise<User> => {
+    const { data, error } = await supabase.auth.signUp({ email, password });
+
+    if (error) throw new Error(error.message);
+
+    return { email: data.user?.email || "", id: data.user?.id || "" };
+  };
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, user, login, logout, signup }}
+    >
       {children}
     </AuthContext.Provider>
   );
