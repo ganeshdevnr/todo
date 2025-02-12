@@ -4,7 +4,6 @@ import { Archive } from "@mui/icons-material";
 import IconAsDatePicker from "./IconAsDatePicker";
 import { Task } from "../hooks/useTasks";
 import TaskName from "./TaskName";
-import { Skeleton } from "@mui/material";
 import TaskSkeleton from "./TaskSkeleton";
 
 interface TaskListProps {

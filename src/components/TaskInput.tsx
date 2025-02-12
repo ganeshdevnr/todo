@@ -6,7 +6,7 @@ interface TaskInputProps {
 }
 
 export default function TaskInput({ onAddTask }: TaskInputProps) {
-  const [task, setTask] = useState("");
+  const [, setTask] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
