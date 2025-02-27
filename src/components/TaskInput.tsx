@@ -12,10 +12,10 @@ export default function TaskInput({ onAddTask }: TaskInputProps) {
   useEffect(() => {
     if (!inputRef.current) return;
 
-    const subscription = fromEvent(inputRef.current, "keydown")
+    const subscription = fromEvent<KeyboardEvent>(inputRef.current, "keydown")
       .pipe(
-        filter((event: any) => event.key === "Enter"),
-        map((event: any) => event.target.value)
+        filter((event) => event.key === "Enter"),
+        map((event) => (event.target as HTMLInputElement).value)
       )
       .subscribe((taskName) => {
         onAddTask(taskName);
