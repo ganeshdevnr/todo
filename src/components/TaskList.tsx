@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, FC } from "react";
 import Checkbox from "@mui/material/Checkbox";
 import { Archive } from "@mui/icons-material";
 import IconAsDatePicker from "./IconAsDatePicker";
@@ -10,15 +10,15 @@ interface TaskListProps {
   tasks: Task[];
   onToggleCompletion: (id: number, status: string) => void;
   onDeleteTask: (id: number) => void;
-  onDueDateChange: (id: number, date: any) => void;
+  onDueDateChange: (id: number, date: string) => void;
 }
 
-export default function TaskList({
+const TaskList: FC<TaskListProps> = ({
   tasks,
   onToggleCompletion,
   onDeleteTask,
   onDueDateChange,
-}: TaskListProps) {
+}: TaskListProps) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -52,7 +52,9 @@ export default function TaskList({
                 />
                 <TaskName taskName={task.task_name} duedate={task.due_date} />
                 <IconAsDatePicker
-                  onDateSelect={(date: any) => onDueDateChange(task.id, date)}
+                  onDateSelect={(date: string) =>
+                    onDueDateChange(task.id, date)
+                  }
                 />
                 <Archive
                   className="mt-2 cursor-pointer text-2xl text-gray-600 hover:text-green-500"
@@ -94,4 +96,6 @@ export default function TaskList({
       </ul>
     </>
   );
-}
+};
+
+export default TaskList;

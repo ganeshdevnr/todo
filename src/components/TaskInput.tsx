@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { fromEvent, filter, map } from "rxjs";
 
 interface TaskInputProps {
   onAddTask: (taskName: string) => void;
 }
 
-export default function TaskInput({ onAddTask }: TaskInputProps) {
+const TaskInput: FC<TaskInputProps> = ({ onAddTask }: TaskInputProps) => {
   const [, setTask] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -34,4 +34,6 @@ export default function TaskInput({ onAddTask }: TaskInputProps) {
       type="text"
     />
   );
-}
+};
+
+export default TaskInput;
